@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
+    <link type="text/css" href="/static/fonts/faces.css" rel="stylesheet" />
+    <link type="text/css" href="style.css" rel="stylesheet" />
+</head>
+<body class="captcha-example free">
+    <script src="js/jquery.js"></script>
+    <script src="js/noty/jquery.noty.js"></script>
+    <script src="js/noty/layouts/bottomRight.js"></script>
+    <script src="js/noty/themes/default.js"></script>
+    <script>
+        function errNoty() {
+            noty({
+                layout: 'bottomRight',
+                type: 'warning',
+                text: 'Проблема с получением данных (Error with loading info). Пожалуйста, сообщите администратору (Please, send to administrator):\n'+ e
+            });
+        }
+
+        $(document).ready(function() {
+            var form = $('#check-form'),
+                captcha_uid;
+            
+            // Inner API
+            function captcha_btn_refresh(state) {
+                var btn = $('#captcha_container .btn-refresh');
+                switch(state) {
+                    case 'refresh':
+                        btn.css('background-image', 'url(/static/images/refresh.png)');
+                        btn.css('cursor', 'pointer');
+                        break;
+                    case 'loading':
+                        btn.css('background-image', 'url(/static/images/page-loader.gif)');
+                        btn.css('cursor', 'default');
+                        break;
+                }
+            }
+            function captcha_init() {
+                captcha_btn_refresh('loading');
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: 'action=get',
+                    success: function(data) {
+                        captcha_btn_refresh('refresh');
+                        try {
+                            var json = jQuery.parseJSON(data);
+                            $('#captcha_container img').prop('src', json.captcha_url);
+                            captcha_uid = json.captcha_uid;
+                            if (captcha_uid == 'error') {
+                                errNoty();
+                            }
+                        } catch(e) {
+                            errNoty();
+                        }
+                    }
+                });
+            }
+            function captcha_refresh() {
+                $('#vcode').prop('value', '');
+                captcha_init();
+            }
+            //---
+
+            // load captcha
+            captcha_init();
+
+            // bind refresh button
+            $('#captcha_container .btn-refresh').bind('click', captcha_refresh);
+
+            // check captcha on format submit
+            form.bind('submit', function() {
+                var params = form.serialize();
+                params += '&action=check';
+                params += '&uid='+ captcha_uid;
+
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: params,
+                    success: function(data) {
+                        try {
+                            var json = jQuery.parseJSON(data);
+                            noty({
+                                layout: 'bottomRight',
+                                type: json.cls,
+                                text: json.msg
+                            });
+                            
+                        } catch(e) {
+                            errNoty();
+                        }
+
+                        captcha_refresh();
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+    <p>Ниже представлена форма тестирования реализации алгоритма автоматического теста Тьюринга (CAPTCHA). После ввода текста сообщения, кода верификации (CAPTCHA) и нажатия кнопки "Отправить", вам будут представлен результат проверки кода.</p>
+    <p>Here is the form of testing the implementation of automatically Turing test (CAPTCHA). After entering message, verification code (for CAPTCHA) and clicking "Submit" you will see pop-up message with result.</p>
+    <form id="check-form" action="free_captcha.php" method="post">
+        <table>
+            <tr><th>Сообщение (Message):</th>
+                <td><textarea name="message" cols=60 rows=4>Текст сообщения по умолчанию.</textarea>
+            <tr><th>Введите цифры (Enter a digits):</th>
+                <td><div id="captcha_container">
+                        <img src="" alt="Ошибка загрузки (Loading error)" /><div class="btn-refresh"></div>
+                    </div>
+            <tr><th>&nbsp;</th><td><input type="text" autofocus name="vcode" id="vcode" />
+            <tr><td colspan=2 class="text-right"><input type="submit" id="submit-btn" value="Отправить (Submit)" />
+        </table>
+    </form>
+</body>
+</html>
