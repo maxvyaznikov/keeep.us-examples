@@ -5,22 +5,15 @@
 
 $secret = 'f3724572-2393-4043-9f83-816bc9accc2e';
 
-
-// $host = $_SERVER['SERVER_NAME'];
-// if ($host != 'keeep.us' && $host != 'www.keeep.us')
-//     $host .= ':8000';
-$host = 'keeep.us';
-
 header("Access-Control-Allow-Origin: http://keeep.us");
 
 function get_captcha() {
     global $secret;
-    global $host;
     $captcha_uid = 'error';
     if ($curl = curl_init()) { // Создаем подключение
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Length: 0')); 
-        curl_setopt($curl, CURLOPT_URL, "http://{$host}/captcha/init/{$secret}/");
+        curl_setopt($curl, CURLOPT_URL, "http://keeep.us/captcha/init/{$secret}/");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Скачанные данные не выводить поток
         $out = curl_exec($curl); // Скачиваем
         $captcha = json_decode($out, true);
@@ -44,7 +37,6 @@ function get_captcha() {
 }
 
 function check_captcha($captcha_uid, $vcode) {
-    global $host;
     if (empty($captcha_uid)) {
         $msg = 'Неверный captcha_uid';
         $cls = 'warning';
@@ -59,7 +51,7 @@ function check_captcha($captcha_uid, $vcode) {
         foreach($args as $k=>$v) {
             $args_str .= "{$k}={$v}&";
         }
-        curl_setopt($curl, CURLOPT_URL, "http://{$host}/captcha/check/f3724572-2393-4043-9f83-816bc9accc2e/");
+        curl_setopt($curl, CURLOPT_URL, "http://keeep.us/captcha/check/f3724572-2393-4043-9f83-816bc9accc2e/");
         curl_setopt($curl, CURLOPT_POST, strlen($args_str));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 

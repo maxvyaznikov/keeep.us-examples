@@ -15,11 +15,6 @@ if ($lang === 'java') {
     $site_token = 'f259558b-2393-4043-9f83-816bc9accc2e';
 }
 
-$host = $_SERVER['SERVER_NAME'];
-// It is for Django dev-server testing
-// if ($host != 'keeep.us' && $host != 'www.keeep.us')
-//     $host .= ':8000';
-
 header("Access-Control-Allow-Origin: http://keeep.us");
 
 ?>
