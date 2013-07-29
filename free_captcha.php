@@ -11,6 +11,7 @@ $secret = 'f3724572-2393-4043-9f83-816bc9accc2e';
 //     $host .= ':8000';
 $host = 'keeep.us';
 
+header("Access-Control-Allow-Origin: http://keeep.us");
 
 function get_captcha() {
     global $secret;
