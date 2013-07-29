@@ -2,8 +2,8 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
-    <link type="text/css" href="http://keeep.us/static/fonts/faces.css" rel="stylesheet" />
-    <link type="text/css" href="http://keeep.us/tools/style.css" rel="stylesheet" />
+    <link type="text/css" href="https://keeep.us/static/fonts/faces.css" rel="stylesheet" />
+    <link type="text/css" href="https://keeep.us/tools/style.css" rel="stylesheet" />
     <script>
         var KEEEPUS_CAPTCHA_VARS = {
             host: 'keeep.us',
@@ -30,7 +30,7 @@
             }
         };
     </script>
-    <script src="http://keeep.us/static/js/captcha_init.js"></script>
+    <script src="https://keeep.us/static/js/captcha_init.js"></script>
 </head>
 <body class="captcha-example">
     <p>Ниже представлена форма тестирования реализации симбиоза алгоритма автоматического теста Тьюринга (CAPTCHA) и методов раскрытия анонимности пользователей или детектирования факта использования средств скрывающих реальный IP-адрес клиента. После ввода текста сообщения, кода верификации (CAPTCHA) и нажатия кнопки "Отправить", вам будут представлены записи с полученной информацией о вашем компьютере.</p>

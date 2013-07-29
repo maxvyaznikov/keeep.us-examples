@@ -37,7 +37,7 @@
         foreach($args as $k=>$v) {
             $args_str .= "{$k}={$v}&";
         }
-        curl_setopt($curl, CURLOPT_URL, "http://keeep.us/captcha/check/{$site_token}/");
+        curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/check/{$site_token}/");
         curl_setopt($curl, CURLOPT_POST, strlen($args_str));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 

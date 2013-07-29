@@ -15,6 +15,6 @@ if ($lang === 'java') {
     $site_token = 'f259558b-2393-4043-9f83-816bc9accc2e';
 }
 
-header("Access-Control-Allow-Origin: http://keeep.us");
+header("Access-Control-Allow-Origin: http://keeep.us,https://keeep.us");
 
 ?>
