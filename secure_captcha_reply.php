@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
-    <link type="text/css" href="/static/fonts/faces.css" rel="stylesheet" />
+    <link type="text/css" href="https://keeep.us/static/fonts/faces.css" rel="stylesheet" />
     <link type="text/css" href="style.css" rel="stylesheet" />
     <script language="javascript" src="js/jsonreport.js"></script>
     <script language="javascript">
@@ -40,6 +40,7 @@
         curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/check/{$site_token}/");
         curl_setopt($curl, CURLOPT_POST, strlen($args_str));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $out = curl_exec($curl);
@@ -92,7 +93,7 @@
             echo 'Ошибка интерпретации (Interpretation error)';
         }
     } else {
-        echo 'Ошибка преобразования (Conversion error)';
+        echo "Ошибка преобразования (Conversion error)";
     }
 
     echo '<br><a href="#" onClick="toggle(\'server_answer\')">Исходный ответ сервера (Source server answer)</a><span id="server_answer" class="hidden jsonreport"> '. $out .'</span>';
