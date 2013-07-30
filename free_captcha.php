@@ -14,6 +14,7 @@ function get_captcha() {
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Length: 0')); 
         curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/init/{$secret}/");
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Скачанные данные не выводить поток
         $out = curl_exec($curl); // Скачиваем
         $captcha = json_decode($out, true);
@@ -54,7 +55,8 @@ function check_captcha($captcha_uid, $vcode) {
         curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/check/f3724572-2393-4043-9f83-816bc9accc2e/");
         curl_setopt($curl, CURLOPT_POST, strlen($args_str));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $out = curl_exec($curl);
 
