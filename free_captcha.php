@@ -5,18 +5,30 @@
 
 $secret = 'f3724572-2393-4043-9f83-816bc9accc2e';
 
-header("Access-Control-Allow-Origin: http://keeep.us,https://keeep.us");
+header("Access-Control-Allow-Origin: https://keeep.us");
 
 function get_captcha() {
     global $secret;
     $captcha_uid = 'error';
+    $log = 'error';
     if ($curl = curl_init()) { // Создаем подключение
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Length: 0')); 
         curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/init/{$secret}/");
+
+        /* Option turn off SSL verification between your site and keeep.us
+         * To avoid it and save the privacy, you need to change this line on something like this:
+         *
+         * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
+         * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
+         *
+         * More details here: http://www.php.net/manual/en/book.curl.php#99979
+         */
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Скачанные данные не выводить поток
+
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $out = curl_exec($curl); // Скачиваем
+        $log = $out;
         $captcha = json_decode($out, true);
         if (NULL !== $captcha && !isset($captcha['error'])) {
             $captcha_uid = $captcha['uid'];
@@ -29,11 +41,12 @@ function get_captcha() {
     if ($captcha_uid != 'error')
         $captcha_url .= "/static/cache/captcha-{$captcha_uid}.png";
     else 
-        $captcha_url .= "/static/images/captcha-{$captcha_uid}.png";
+        $captcha_url .= "/static/images/captcha-error.png";
     
     return array(
                 'captcha_url' => $captcha_url,
-                'captcha_uid' => $captcha_uid
+                'captcha_uid' => $captcha_uid,
+                'log' => $log
                 );
 }
 
@@ -56,7 +69,17 @@ function check_captcha($captcha_uid, $vcode) {
         curl_setopt($curl, CURLOPT_POST, strlen($args_str));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); 
+
+        /* Option turn off SSL verification between your site and keeep.us
+         * To avoid it and save the privacy, you need to change this line on something like this:
+         *
+         * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
+         * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
+         *
+         * More details here: http://www.php.net/manual/en/book.curl.php#99979
+         */
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $out = curl_exec($curl);
 

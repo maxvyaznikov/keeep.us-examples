@@ -1,4 +1,4 @@
-<!DOCTYPE html><?php require('secure_captcha.inc.php'); ?>
+<?php require('secure_captcha.inc.php'); ?><!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />

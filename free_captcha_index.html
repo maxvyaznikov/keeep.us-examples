@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
-    <link type="text/css" href="/static/fonts/faces.css" rel="stylesheet" />
+    <link type="text/css" href="https://keeep.us/static/fonts/faces.css" rel="stylesheet" />
     <link type="text/css" href="style.css" rel="stylesheet" />
 </head>
 <body class="captcha-example free">
@@ -12,10 +12,14 @@
     <script src="js/noty/themes/default.js"></script>
     <script>
         function errNoty() {
+            var msg = 'Проблема с получением данных (Error with loading info). Пожалуйста, сообщите администратору (Please, send to administrator)<br><b>vk.com/maxvyaznikov</b><br><b>vmn@siterra.org</b>';
+            if (typeof e != 'undefined') {
+                msg += ':<br>'+ e;
+            }
             noty({
                 layout: 'bottomRight',
                 type: 'warning',
-                text: 'Проблема с получением данных (Error with loading info). Пожалуйста, сообщите администратору (Please, send to administrator):\n'+ e
+                text: msg
             });
         }
 
@@ -28,11 +32,11 @@
                 var btn = $('#captcha_container .btn-refresh');
                 switch(state) {
                     case 'refresh':
-                        btn.css('background-image', 'url(/static/images/refresh.png)');
+                        btn.css('background-image', 'url(https://keeep.us/static/images/refresh.png)');
                         btn.css('cursor', 'pointer');
                         break;
                     case 'loading':
-                        btn.css('background-image', 'url(/static/images/page-loader.gif)');
+                        btn.css('background-image', 'url(https://keeep.us/static/images/page-loader.gif)');
                         btn.css('cursor', 'default');
                         break;
                 }
@@ -53,7 +57,7 @@
                                 errNoty();
                             }
                         } catch(e) {
-                            errNoty();
+                            errNoty(e);
                         }
                     }
                 });

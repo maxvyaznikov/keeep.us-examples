@@ -90,7 +90,7 @@ td {
     border: 1px solid black;
     margin: 0 0 9px -34px;
     cursor: pointer;
-    background: url(/static/images/refresh.png) no-repeat left center;
+    background: url(https://keeep.us/static/images/refresh.png) no-repeat left center;
 }
 .btn-refresh:hover {
     background-position: -32px center;

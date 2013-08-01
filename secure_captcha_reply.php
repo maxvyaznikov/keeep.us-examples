@@ -1,4 +1,4 @@
-<!DOCTYPE html><?php require('secure_captcha.inc.php'); ?>
+<?php require('secure_captcha.inc.php'); ?><!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF8" />
@@ -27,7 +27,7 @@
         echo 'Неверный session ID (There are incorrect session ID). Вероятно, устаревший (Session is old). ';
     }
 
-    if ($curl = curl_init()) { // Создаем подключение
+    if ($curl = curl_init()) { // Creating connection
         $args = array(
             'uid' => $session_uid,
             'captcha_answer' => $vcode,
@@ -40,7 +40,15 @@
         curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/check/{$site_token}/");
         curl_setopt($curl, CURLOPT_POST, strlen($args_str));
         curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
+
+        /* Option turn off SSL verification between your site and keeep.us
+         * To avoid it and save the privacy, you need to change this line on something like this:
+         * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
+         * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
+         * More details here: http://www.php.net/manual/en/book.curl.php#99979
+         */
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $out = curl_exec($curl);
@@ -90,10 +98,10 @@
         } elseif (isset($data['msg']) && FALSE === $data['is_success']) {
             echo 'Сервер выслал ошибку с кодом (Server sends) "'. $data['msg'] .'"';
         } else {
-            echo 'Ошибка интерпретации (Interpretation error)';
+            echo "Ошибка интерпретации (Interpretation error):<br> {$out}";
         }
     } else {
-        echo "Ошибка преобразования (Conversion error)";
+        echo "Ошибка преобразования (Conversion error):<br> {$out}";
     }
 
     echo '<br><a href="#" onClick="toggle(\'server_answer\')">Исходный ответ сервера (Source server answer)</a><span id="server_answer" class="hidden jsonreport"> '. $out .'</span>';
