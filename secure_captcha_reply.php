@@ -30,8 +30,7 @@
     if ($curl = curl_init()) { // Creating connection
         $args = array(
             'uid' => $session_uid,
-            'captcha_answer' => $vcode,
-            'message' => urlencode($message)
+            'captcha_answer' => $vcode
         );
         $args_str = '';
         foreach($args as $k=>$v) {
@@ -107,5 +106,6 @@
     echo '<br><a href="#" onClick="toggle(\'server_answer\')">Исходный ответ сервера (Source server answer)</a><span id="server_answer" class="hidden jsonreport"> '. $out .'</span>';
 
     ?>
+    <h3><a href="secure_captcha_index.php">Попробовать еще раз (Try again)</a></h3>
 </body>
 </html>

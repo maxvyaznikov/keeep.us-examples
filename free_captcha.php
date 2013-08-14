@@ -5,7 +5,7 @@
 
 $secret = 'f3724572-2393-4043-9f83-816bc9accc2e';
 
-header("Access-Control-Allow-Origin: https://keeep.us");
+header("Access-Control-Allow-Origin: https://keeep.us/");
 
 function get_captcha() {
     global $secret;
