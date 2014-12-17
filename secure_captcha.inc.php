@@ -1,6 +1,6 @@
 <?php
 
-$DATA = $_POST;
+$DATA = $_REQUEST;
 
 function fetch($var_name, $default=null) {
     global $DATA;

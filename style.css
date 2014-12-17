@@ -37,6 +37,7 @@ textarea,
 }
 #captcha_container img {
     min-height: 50px;
+    max-width: 200px;
 }
 #captcha_answer {
     width: 187px;
@@ -89,12 +90,21 @@ td {
     height: 32px;
     border: 1px solid black;
     margin: 0 0 9px -34px;
-    cursor: pointer;
-    background: url(https://keeep.us/static/images/refresh.png) no-repeat left center;
+    background-repeat: no-repeat;
+    background-position: left center;
 }
 .btn-refresh:hover {
     background-position: -32px center;
 }
 .btn-refresh:active {
     background-position: right center;
+}
+.btn-refresh.btn-state-refresh {
+    background-image: url(https://keeep.us/static/images/refresh.png);
+    cursor: pointer;
+}
+.btn-refresh.btn-state-loading {
+    background-image: url(https://keeep.us/static/images/page-loader.gif);
+    cursor: default;
+    background-position: left center !important;
 }

@@ -35,7 +35,7 @@
 <body class="captcha-example">
     <p>Ниже представлена форма тестирования реализации симбиоза алгоритма автоматического теста Тьюринга (CAPTCHA) и методов раскрытия анонимности пользователей или детектирования факта использования средств скрывающих реальный IP-адрес клиента. После ввода текста сообщения, кода верификации (CAPTCHA) и нажатия кнопки "Отправить", вам будут представлены записи с полученной информацией о вашем компьютере.</p>
     <p>Here is the form of testing the implementation of symbiosis algorithm automatically Turing test (CAPTCHA) and practices of disclosure anonymous users or detecting the fact of using tools to hide the real IP-address. After entering message, verification code (for CAPTCHA) and clicking "Submit" you will be presented with the information obtained about you.</p>
-    <form id="check-form" action="secure_captcha_reply.php?lang=<? echo $lang ?>" method="post">
+    <form id="check-form" action="secure_captcha_reply.php?lang=<?php echo $lang ?>" method="post">
         <table>
             <tr><th>Сообщение (Message):</th><td><textarea name="message" cols=60 rows=4>Текст сообщения по умолчанию (Default message text). Ради демонстрации будет приведен на результирующей странице после отправки формы (It'll be on result page for demonstration)</textarea>
             <tr><th>Введите цифры (Enter a digits):</th><td>

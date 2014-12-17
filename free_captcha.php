@@ -30,7 +30,7 @@ function get_captcha() {
         $out = curl_exec($curl); // Скачиваем
         $log = $out;
         $captcha = json_decode($out, true);
-        if (NULL !== $captcha && !isset($captcha['error'])) {
+        if (NULL !== $captcha && false !== $captcha['is_success']) {
             $captcha_uid = $captcha['uid'];
         }
         curl_close($curl);
@@ -39,7 +39,7 @@ function get_captcha() {
                                     ? $captcha['image_server'] 
                                     : 'keeep.us');
     if ($captcha_uid != 'error')
-        $captcha_url .= "/static/cache/captcha-{$captcha_uid}.png";
+        $captcha_url .= "/media/captcha/captcha-{$captcha_uid}.png";
     else 
         $captcha_url .= "/static/images/captcha-error.png";
     

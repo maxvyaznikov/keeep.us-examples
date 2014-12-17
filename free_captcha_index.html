@@ -29,17 +29,8 @@
             
             // Inner API
             function captcha_btn_refresh(state) {
-                var btn = $('#captcha_container .btn-refresh');
-                switch(state) {
-                    case 'refresh':
-                        btn.css('background-image', 'url(https://keeep.us/static/images/refresh.png)');
-                        btn.css('cursor', 'pointer');
-                        break;
-                    case 'loading':
-                        btn.css('background-image', 'url(https://keeep.us/static/images/page-loader.gif)');
-                        btn.css('cursor', 'default');
-                        break;
-                }
+                $('#captcha_container .btn-refresh').removeClass('btn-state-refresh btn-state-loading');
+                $('#captcha_container .btn-refresh').addClass('btn-state-' + state);
             }
             function captcha_init() {
                 captcha_btn_refresh('loading');
