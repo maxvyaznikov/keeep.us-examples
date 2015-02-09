@@ -27,32 +27,31 @@
         echo 'Неверный session ID (There are incorrect session ID). Вероятно, устаревший (Session is old). ';
     }
 
-    if ($curl = curl_init()) { // Creating connection
-        $args = array(
-            'uid' => $session_uid,
-            'captcha_answer' => $vcode
-        );
-        $args_str = '';
-        foreach($args as $k=>$v) {
-            $args_str .= "{$k}={$v}&";
-        }
-        curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/check/{$site_token}/");
-        curl_setopt($curl, CURLOPT_POST, strlen($args_str));
-        curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
-
-        /* Option turn off SSL verification between your site and keeep.us
-         * To avoid it and save the privacy, you need to change this line on something like this:
-         * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
-         * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
-         * More details here: http://www.php.net/manual/en/book.curl.php#99979
-         */
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $out = curl_exec($curl);
-        curl_close($curl);
+    $curl = curl_init();
+    $args = array(
+        'uid' => $session_uid,
+        'captcha_answer' => $vcode
+    );
+    $args_str = '';
+    foreach($args as $k=>$v) {
+        $args_str .= "{$k}={$v}&";
     }
+    curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/check/{$site_token}/");
+    curl_setopt($curl, CURLOPT_POST, strlen($args_str));
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $args_str);
+
+    /* Option turn off SSL verification between your site and keeep.us
+     * To avoid it and save the privacy, you need to change this line on something like this:
+     * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
+     * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
+     * More details here: http://www.php.net/manual/en/book.curl.php#99979
+     */
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $out = curl_exec($curl);
+    curl_close($curl);
 
     $data = json_decode($out, true);
 
