@@ -11,30 +11,30 @@ function get_captcha() {
     global $secret;
     $captcha_uid = 'error';
     $log = 'error';
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_POST, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Length: 0')); 
-    curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/init/{$secret}/");
+    if ($curl = curl_init()) { // Создаем подключение
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Length: 0')); 
+        curl_setopt($curl, CURLOPT_URL, "https://keeep.us/captcha/init/{$secret}/");
 
-    /* Option turn off SSL verification between your site and keeep.us
-     * To avoid it and save the privacy, you need to change this line on something like this:
-     *
-     * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
-     * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
-     *
-     * More details here: http://www.php.net/manual/en/book.curl.php#99979
-     */
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        /* Option turn off SSL verification between your site and keeep.us
+         * To avoid it and save the privacy, you need to change this line on something like this:
+         *
+         * curl_setopt ($curl, CURLOPT_SSL_VERIFYPEER, true);
+         * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
+         *
+         * More details here: http://www.php.net/manual/en/book.curl.php#99979
+         */
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $out = curl_exec($curl); // Скачиваем
-    $log = $out;
-    $captcha = json_decode($out, true);
-    if (NULL !== $captcha && false !== $captcha['is_success']) {
-        $captcha_uid = $captcha['uid'];
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $out = curl_exec($curl); // Скачиваем
+        $log = $out;
+        $captcha = json_decode($out, true);
+        if (NULL !== $captcha && false !== $captcha['is_success']) {
+            $captcha_uid = $captcha['uid'];
+        }
+        curl_close($curl);
     }
-    curl_close($curl);
-
     $captcha_url = 'https://'. (isset($captcha['image_server']) 
                                     ? $captcha['image_server'] 
                                     : 'keeep.us');
