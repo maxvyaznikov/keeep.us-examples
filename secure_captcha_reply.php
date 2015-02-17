@@ -8,11 +8,15 @@
     <script language="javascript">
         function formatJson(id) {
             var el = document.getElementById(id);
-            el.innerHTML = _.jsonreport(el.innerHTML);
+            if (el) {
+                el.innerHTML = _.jsonreport(el.innerHTML);
+            }
         }
         function toggle(id) {
             var el = document.getElementById(id);
-            el.style.display = (el.style.display == 'block' ? 'none' : 'block');
+            if (el) {
+                el.style.display = (el.style.display == 'block' ? 'none' : 'block');
+            }
         }
     </script>
 </head>
@@ -46,64 +50,81 @@
      * curl_setopt ($curl, CURLOPT_CAINFO, "pathto/cacert.pem");
      * More details here: http://www.php.net/manual/en/book.curl.php#99979
      */
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
 
     curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: text/plain')); 
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($curl, CURLOPT_VERBOSE, 5);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 60);
+
+    $stderr = fopen('php://temp', 'rw+');
+    curl_setopt($curl, CURLOPT_STDERR, $stderr);
+
     $out = curl_exec($curl);
+    $err = curl_error($curl);
     curl_close($curl);
 
-    $data = json_decode($out, true);
+    if ($err) {
+        echo '<span class="failure">curl error occured: '. $err .'</span><br>';
 
-    function is_public_ip_real($data) {
-        return $data['public_ip'] == $data['tcp_ip']
-                && $data['public_ip'] == $data['udp_ip'];
-    }
-    function get_real_ip($data) {
-        if (is_public_ip_real($data))
-            return $data['public_ip'];
-        elseif ($data['tcp_ip'] == $data['udp_ip'])
-            return $data['tcp_ip'];
-        else
-            return '';
-    }
-
-    if (NULL !== $data) {
-        if (isset($data['public_ip']) 
-                && isset($data['tcp_ip']) 
-                && isset($data['udp_ip'])
-                && isset($data['is_success'])) {
-            
-            // is CAPTCHA checking success?
-            if ($data['is_success'])
-                echo '<span class="success">Проверка пройдена (The test is successful)</span><br>';
-            else
-                echo '<span class="failure">Проверка не пройдена (The test is failed)</span><br>';
-            
-            if (is_public_ip_real($data)) {
-                echo '<span class="success">Использован реальный IP адрес (Used real IP address)</span><br>';
-            } else {
-                echo '<span class="failure">Использован подставной IP адрес (Used fake IP address): '. $data['public_ip'] .'</span><br>';
-            }
-            
-            $ip = get_real_ip($data);
-            if (!empty($ip)) {
-                echo '<span class="success">Найден реальный IP адрес (Found real IP address):</span> '. $ip .'<br>';
-            } else {
-                echo '<span class="unknown">Данные о реальном IP адресе неоднозначны (Information about IP addresses is ambiguous)</span><br>';
-            }
-            
-        } elseif (isset($data['msg']) && FALSE === $data['is_success']) {
-            echo 'Сервер выслал ошибку с кодом (Server sends) "'. $data['msg'] .'"';
-        } else {
-            echo "Ошибка интерпретации (Interpretation error):<br> {$out}";
-        }
+        rewind($stderr);
+        echo '<pre>'. stream_get_contents($stderr) .'</pre>';
+        fclose($stderr);
     } else {
-        echo "Ошибка преобразования (Conversion error):<br> {$out}";
+
+        $data = json_decode($out, true);
+    
+        function is_public_ip_real($data) {
+            return $data['public_ip'] == $data['tcp_ip']
+                    && $data['public_ip'] == $data['udp_ip'];
+        }
+        function get_real_ip($data) {
+            if (is_public_ip_real($data))
+                return $data['public_ip'];
+            elseif ($data['tcp_ip'] == $data['udp_ip'])
+                return $data['tcp_ip'];
+            else
+                return '';
+        }
+    
+        if (NULL !== $data) {
+            if (isset($data['public_ip']) 
+                    && isset($data['tcp_ip']) 
+                    && isset($data['udp_ip'])
+                    && isset($data['is_success'])) {
+                
+                // is CAPTCHA checking success?
+                if ($data['is_success'])
+                    echo '<span class="success">Проверка пройдена (The test is successful)</span><br>';
+                else
+                    echo '<span class="failure">Проверка не пройдена (The test is failed)</span><br>';
+                
+                if (is_public_ip_real($data)) {
+                    echo '<span class="success">Использован реальный IP адрес (Used real IP address)</span><br>';
+                } else {
+                    echo '<span class="failure">Использован подставной IP адрес (Used fake IP address): '. $data['public_ip'] .'</span><br>';
+                }
+                
+                $ip = get_real_ip($data);
+                if (!empty($ip)) {
+                    echo '<span class="success">Найден реальный IP адрес (Found real IP address):</span> '. $ip .'<br>';
+                } else {
+                    echo '<span class="unknown">Данные о реальном IP адресе неоднозначны (Information about IP addresses is ambiguous)</span><br>';
+                }
+                
+            } elseif (isset($data['msg']) && FALSE === $data['is_success']) {
+                echo 'Сервер выслал ошибку с кодом (Server sends) "'. $data['msg'] .'"';
+            } else {
+                echo "Ошибка интерпретации (Interpretation error):<br> {$out}";
+            }
+        } else {
+            echo "Ошибка преобразования (Conversion error):<br> {$out}";
+        }
+    
+        echo '<br><a href="#" onClick="toggle(\'server_answer\')">Исходный ответ сервера (Source server answer)</a><span id="server_answer" class="hidden jsonreport"> '. $out .'</span>';
     }
-
-    echo '<br><a href="#" onClick="toggle(\'server_answer\')">Исходный ответ сервера (Source server answer)</a><span id="server_answer" class="hidden jsonreport"> '. $out .'</span>';
-
     ?>
     <h3><a href="secure_captcha_index.php">Попробовать еще раз (Try again)</a></h3>
 </body>
